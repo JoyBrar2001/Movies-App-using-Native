@@ -29,7 +29,7 @@ const HomeScreen = () => {
         </View>
       </SafeAreaView>
 
-      <ScrollView vertical showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 10 }}>
+      <ScrollView vertical showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 10, marginTop: -10, }}>
         <TrendingMovies data={trending} />
       
         <MovieList title="Upcoming" data={upcoming} />
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1f201e',
   },
   topBarWrapper: {
+    marginTop: 44,
     marginBottom: ios ? -8 : 12,
   },
   searchWrapper: {

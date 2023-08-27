@@ -37,7 +37,7 @@ const TrendingMovies = ({ data }) => {
         mode='parallax'
         scrollAnimationDuration={1000}
         customConfig={{ width: width*0.5 }}
-        style={{marginVertical: -36}}
+        style={{marginBottom: -36, marginTop: -54,}}
       />
     </View>
   )
