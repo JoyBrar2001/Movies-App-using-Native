@@ -1,9 +1,10 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import * as Font from 'expo-font';
 import React, { useState, useEffect } from 'react';
 import HomeScreen from '../screens/HomeScreen';
+import MovieScreen from '../screens/MovieScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,7 @@ const AppNavigation = () => {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name='Home' options={{headerShown: false}} component={HomeScreen} />
+        <Stack.Screen name='Movie' options={{headerShown: false}} component={MovieScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

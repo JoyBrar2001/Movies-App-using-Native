@@ -6,7 +6,7 @@ import React from 'react'
 const { width, height } = Dimensions.get('window');
 
 const MovieCard = ({ item, handleClick }) => (
-  <TouchableOpacity onPress={handleClick} style={styles.movieCardWrapper}>
+  <TouchableOpacity onPress={() => handleClick(item)} style={styles.movieCardWrapper}>
     <Image 
       source={require('../assets/images/endgamePoster.jpeg')}
       style={{
@@ -21,7 +21,7 @@ const MovieCard = ({ item, handleClick }) => (
 const TrendingMovies = ({ data }) => {
 
   const navigation = useNavigation()
-  const handleClick = () => {
+  const handleClick = ({ item }) => {
     navigation.navigate('Movie', item)
   }
 
