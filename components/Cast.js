@@ -1,9 +1,12 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
+import { image185 } from '../api/moviedb'
 
 const Cast = ({ cast, navigation }) => {
   let characterName = "Captain America"
   let personName = "Chris Evans"
+
+  console.log(cast)
 
   return (
     <View style={styles.castMainWrapper}>
@@ -17,12 +20,12 @@ const Cast = ({ cast, navigation }) => {
           >
             <View style={styles.imageWrapper}>
               <Image 
-                source={require('../assets/images/chrisEvans.jpeg')} 
+                source={{uri: image185(person?.profile_path)}} 
                 style={styles.castImage} 
               />
             </View>
-            <Text style={styles.characterName}>{characterName.length > 12 ? characterName.slice(0,10) + '...' : characterName}</Text>
-            <Text style={styles.personName}>{personName.length > 12 ? personName.slice(0,10) + '...' : personName}</Text>
+            <Text style={styles.characterName}>{person.character.length > 12 ? person.character.slice(0,10) + '...' : person.character}</Text>
+            <Text style={styles.personName}>{person.name.length > 12 ? person.name.slice(0,10) + '...' : person.name}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>

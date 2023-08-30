@@ -4,7 +4,7 @@ import { ChevronLeftIcon } from 'react-native-heroicons/outline'
 import { HeartIcon } from 'react-native-heroicons/solid'
 import { useNavigation } from '@react-navigation/native'
 import { theme } from '../theme'
-import Loading from '../components/loading'
+import Loading from '../components/Loading'
 import MovieList from '../components/MovieList'
 
 const { width, height } = Dimensions.get('window')

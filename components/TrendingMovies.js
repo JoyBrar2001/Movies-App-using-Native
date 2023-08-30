@@ -2,21 +2,27 @@ import { Dimensions, StyleSheet, Text, View, TouchableOpacity, TouchableWithoutF
 import { useNavigation } from '@react-navigation/native'
 import Carousel from 'react-native-reanimated-carousel'
 import React from 'react'
+import { image500 } from '../api/moviedb';
 
 const { width, height } = Dimensions.get('window');
 
-const MovieCard = ({ item, handleClick }) => (
-  <TouchableOpacity onPress={() => handleClick(item)} style={styles.movieCardWrapper}>
-    <Image 
-      source={require('../assets/images/endgamePoster.jpeg')}
-      style={{
-        width: width,
-        height: height*0.7,
-        borderRadius: 30,
-      }}
-    />
-  </TouchableOpacity>
-)
+const MovieCard = ({ item, handleClick }) => {
+  // console.log('item poster path : ' , item.poster_path)
+
+  const navigation = useNavigation()
+  return (
+    <TouchableOpacity onPress={() => navigation.navigate('Movie',item)} style={styles.movieCardWrapper}>
+      <Image
+        source={{ uri: image500(item.poster_path) }}
+        style={{
+          width: width,
+          height: height * 0.7,
+          borderRadius: 30,
+        }}
+      />
+    </TouchableOpacity>
+  )
+}
 
 const TrendingMovies = ({ data }) => {
 
@@ -36,8 +42,8 @@ const TrendingMovies = ({ data }) => {
         autoPlay={true}
         mode='parallax'
         scrollAnimationDuration={1000}
-        customConfig={{ width: width*0.5 }}
-        style={{marginBottom: -36, marginTop: -54,}}
+        customConfig={{ width: width * 0.5 }}
+        style={{ marginBottom: -36, marginTop: -54, }}
       />
     </View>
   )

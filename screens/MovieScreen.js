@@ -9,7 +9,8 @@ import { Image } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import Cast from '../components/Cast'
 import MovieList from '../components/MovieList'
-import Loading from '../components/loading'
+import Loading from '../components/Loading'
+import { fetchMovieCredits, fetchMovieDetails, image500 } from '../api/moviedb'
 
 var { width, height } = Dimensions.get('window')
 const ios = Platform.OS == "ios"
@@ -18,13 +19,30 @@ const MovieScreen = () => {
   const { params: item } = useRoute();
   const [isFavourite, toggleFavourite] = useState(false);
   const navigation = useNavigation();
-  let movieName = "Avengers: Endgame"
-  const [cast, setCast] = useState([1, 2, 3, 4, 5])
+  const [cast, setCast] = useState([])
   const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [movie, setMovie] = useState({})
+  
   useEffect(() => {
-    // API CALL HERE
+    // console.log(item.id)
+    setLoading(true)
+    getMovieDetails(item.id)
+    getMovieCredits(item.id)
   }, [item])
+
+  const getMovieDetails = async id => {
+    const data = await fetchMovieDetails(id)
+    // console.log('Got details : ', data)
+    if(data) setMovie(data)
+    setLoading(false)
+  }
+
+  const getMovieCredits = async id => {
+    const data = await fetchMovieCredits(id)
+    // console.log('Credits : ', data.cast)
+    if(data) setCast(data.cast)
+  }
 
   return (
     <ScrollView vertical showsVerticalScrollIndicator={false} contentContainerStyle={styles.movieScreenWrapper} >
@@ -43,7 +61,7 @@ const MovieScreen = () => {
         ) : (
           <View>
             <Image
-              source={require('../assets/images/endgamePoster.jpeg')}
+              source={{uri: image500(movie?.poster_path)}}
               style={{ width: width, height: height * 0.55 }}
             />
             <LinearGradient
@@ -59,21 +77,25 @@ const MovieScreen = () => {
       </View>
 
       <View style={styles.movieDetailsWrapper}>
-        <Text style={styles.movieTitle}>{movieName}</Text>
-        <Text style={styles.releaseDate}>Released • 2020 • 170 min</Text>
+        <Text style={styles.movieTitle}>{movie?.title}</Text>
+        <Text style={styles.releaseDate}>{movie.status} • {movie?.release_date?.split('-')[0]} • {movie?.runtime} min</Text>
       </View>
 
       <View style={styles.genresWrapper}>
-        <Text style={styles.genreText}>Action • </Text>
-        <Text style={styles.genreText}>Thrill • </Text>
-        <Text style={styles.genreText}>Comedy</Text>
+        {movie?.genres?.map((genre, index) => {
+          return(
+            <Text key={index} style={styles.genreText}>{genre?.name} {index === movie.genres.length-1 ? '' : '•'} </Text>
+          )
+        })}
       </View>
 
-      <Text style={styles.description}>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure veritatis sit nihil quas voluptas corporis cum explicabo quisquam recusandae, quia quibusdam aliquid aliquam, ut aperiam? Exercitationem accusamus dolore ullam voluptas beatae, quasi laudantium odit architecto non odio, minima quaerat. Adipisci ut soluta quasi saepe debitis, velit error commodi repudiandae tempora.</Text>
+      <Text style={styles.description}>
+        {movie?.overview}
+      </Text>
 
       <Cast navigation={navigation} cast={cast} />
 
-      <MovieList title="Similar Movies" data={similarMovies} />
+      {/* <MovieList title="Similar Movies" data={similarMovies} /> */}
     </ScrollView>
   )
 }

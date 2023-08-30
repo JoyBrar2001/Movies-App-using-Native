@@ -2,6 +2,7 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions
 import React from 'react'
 import { theme } from '../theme'
 import { useNavigation } from '@react-navigation/native'
+import { image185 } from '../api/moviedb';
 
 const { width, height } = Dimensions.get('window');
 
@@ -21,10 +22,10 @@ const MovieList = ({title, data}) => {
         {data.map((item, index) => (
           <TouchableOpacity style={styles.movieCardWrapper} key={index} onPress={() => navigation.navigate('Movie', item)}>
             <View style={styles.imageWrapper}>
-              <Image source={require('../assets/images/endgamePoster.jpeg')} style={styles.image} />
+              <Image source={{uri: image185(item.poster_path)}} style={styles.image} />
             </View>
             <Text style={{ color: "white" }}>{
-              MovieName.length > 14 ? MovieName.slice(0,14)+'...' : MovieName
+              item.title.length > 14 ? item.title.slice(0,14)+'...' : item.title
               }</Text>
           </TouchableOpacity>
         ))}
@@ -56,6 +57,7 @@ const styles = StyleSheet.create({
   image: {
     height: height*0.25,
     width: width*0.33,
+    borderRadius: 15,
   },
   imageWrapper: {
     marginVertical: 4,

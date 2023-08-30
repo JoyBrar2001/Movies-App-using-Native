@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Dimensions, StyleSheet, Text, TextInput, View, SafeAreaView, TouchableOpacity, ScrollView, Image } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
-import Loading from '../components/loading';
+import Loading from '../components/Loading';
 
 const { width, height } = Dimensions.get('window')
 

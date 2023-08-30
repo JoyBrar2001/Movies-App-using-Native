@@ -1,23 +1,48 @@
 import { StyleSheet, Text, View, SafeAreaView, Platform, TouchableOpacity, ScrollView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Bars3CenterLeftIcon, MagnifyingGlassIcon } from 'react-native-heroicons/outline'
 import { theme } from '../theme';
 import TrendingMovies from '../components/TrendingMovies';
 import MovieList from '../components/MovieList';
 import { useNavigation } from '@react-navigation/native';
-import Loading from '../components/loading';
+import Loading from '../components/Loading';
+import { fetchTopRatedMovies, fetchTrendingMovies, fetchUpcomingMovies } from '../api/moviedb';
 
 const ios = Platform.OS == "ios";
 
 const HomeScreen = () => {
 
-  const [trending, setTrending] = useState([1, 2, 3, 4, 5])
-  const [upcoming, setUpcoming] = useState([1, 2, 3, 4, 5])
-  const [topRated, setTopRated] = useState([1, 2, 3, 4, 5])
-  const [loading, setLoading] = useState(false);
-
+  const [trending, setTrending] = useState([])
+  const [upcoming, setUpcoming] = useState([])
+  const [topRated, setTopRated] = useState([])
+  const [loading, setLoading] = useState(true);
   const naviagtion = useNavigation();
+
+  useEffect(() => {
+    getTrendingMovies()
+    getUpcomingMovies()
+    getTopRatedMovies()
+  },[])
+
+  const getTrendingMovies = async() => {
+    const data = await fetchTrendingMovies()
+    // console.log('Trending Movies : ', data)
+    if(data && data.results) setTrending(data.results)
+    setLoading(false)
+  }
+  const getUpcomingMovies = async() => {
+    const data = await fetchUpcomingMovies()
+    // console.log('Trending Movies : ', data)
+    if(data && data.results) setUpcoming(data.results)
+    // setLoading(false)
+  }
+  const getTopRatedMovies = async() => {
+    const data = await fetchTopRatedMovies()
+    // console.log('Trending Movies : ', data)
+    if(data && data.results) setTopRated(data.results)
+    // setLoading(false)
+  }
 
   return (
     <View style={styles.homeWrapper}>
@@ -39,7 +64,9 @@ const HomeScreen = () => {
           <Loading />
         ) : (
           <ScrollView vertical showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 10, marginTop: -10, }}>
-            <TrendingMovies data={trending} />
+            {trending && 
+              <TrendingMovies data={trending} />
+            }
 
             <MovieList title="Upcoming" data={upcoming} />
             <MovieList title="Top Rated" data={topRated} />
