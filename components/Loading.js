@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
   loadingWrapper: {
     height,
     width,
-    position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

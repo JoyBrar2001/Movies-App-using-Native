@@ -6,7 +6,7 @@ const Cast = ({ cast, navigation }) => {
   let characterName = "Captain America"
   let personName = "Chris Evans"
 
-  console.log(cast)
+  // console.log(cast)
 
   return (
     <View style={styles.castMainWrapper}>

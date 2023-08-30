@@ -21,12 +21,14 @@ const MovieScreen = () => {
   const navigation = useNavigation();
   const [cast, setCast] = useState([])
   const [similarMovies, setSimilarMovies] = useState()
-  const [loading, setLoading] = useState(true)
+  const [loadingImage, setLoadingImage] = useState(true)
+  const [loadingCast, setLoadingCast] = useState(true)
+  const [loadingSimilar, setLoadingSimilar] = useState(true)
   const [movie, setMovie] = useState({})
-  
+
   useEffect(() => {
     // console.log(item.id)
-    setLoading(true)
+    // setLoading(true)
     getMovieDetails(item.id)
     getMovieCredits(item.id)
     getSimilarMovies(item.id)
@@ -35,21 +37,24 @@ const MovieScreen = () => {
   const getMovieDetails = async id => {
     const data = await fetchMovieDetails(id)
     // console.log('Got details : ', data)
-    if(data) setMovie(data)
-    setLoading(false)
+    if (data) setMovie(data)
+    setLoadingImage(false)
   }
 
   const getMovieCredits = async id => {
     const data = await fetchMovieCredits(id)
     // console.log('Credits : ', data.cast)
-    if(data) setCast(data.cast)
+    if (data) setCast(data.cast)
+    setLoadingCast(false)
   }
-  
+
   const getSimilarMovies = async id => {
     const data = await fetchSimilarMovies(id)
     // console.log('Similar Movies : ', data.results)
-    if(data) setSimilarMovies(data.results)
+    if (data) setSimilarMovies(data.results)
+    setLoadingSimilar(false)
   }
+
 
   return (
     <ScrollView vertical showsVerticalScrollIndicator={false} contentContainerStyle={styles.movieScreenWrapper} >
@@ -63,12 +68,12 @@ const MovieScreen = () => {
           </TouchableOpacity>
         </SafeAreaView>
 
-        {loading ? (
+        {loadingImage ? (
           <Loading />
         ) : (
           <View>
             <Image
-              source={{uri: image500(movie?.poster_path)}}
+              source={{ uri: image500(movie?.poster_path) }}
               style={{ width: width, height: height * 0.55 }}
             />
             <LinearGradient
@@ -83,6 +88,7 @@ const MovieScreen = () => {
         )}
       </View>
 
+
       <View style={styles.movieDetailsWrapper}>
         <Text style={styles.movieTitle}>{movie?.title}</Text>
         <Text style={styles.releaseDate}>{movie.status} • {movie?.release_date?.split('-')[0]} • {movie?.runtime} min</Text>
@@ -90,8 +96,8 @@ const MovieScreen = () => {
 
       <View style={styles.genresWrapper}>
         {movie?.genres?.map((genre, index) => {
-          return(
-            <Text key={index} style={styles.genreText}>{genre?.name} {index === movie.genres.length-1 ? '' : '•'} </Text>
+          return (
+            <Text key={index} style={styles.genreText}>{genre?.name} {index === movie.genres.length - 1 ? '' : '•'} </Text>
           )
         })}
       </View>
@@ -100,13 +106,18 @@ const MovieScreen = () => {
         {movie?.overview}
       </Text>
 
-      {cast.length > 0 &&
+      {loadingCast ? (
+        <Loading />
+      ) : (
         <Cast navigation={navigation} cast={cast} />
+      )
       }
 
-      {similarMovies.length > 0 && 
+      {loadingSimilar ? (
+        <Loading />
+      ) : (
         <MovieList title="Similar Movies" data={similarMovies} />
-      }
+      )}
     </ScrollView>
   )
 }
