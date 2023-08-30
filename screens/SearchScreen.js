@@ -1,21 +1,46 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Dimensions, StyleSheet, Text, TextInput, View, SafeAreaView, TouchableOpacity, ScrollView, Image } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
 import Loading from '../components/Loading';
+import { debounce } from 'lodash';
+import { image185, searchMovies } from '../api/moviedb';
 
 const { width, height } = Dimensions.get('window')
 
 const SearchScreen = () => {
   const navigation = useNavigation()
-  const [results, setResults] = useState([1, 2, 3, 4, 5])
+  const [results, setResults] = useState([])
   const movieName = "Avengers: Endgame"
   const [loading, setLoading] = useState(false)
+
+  const handleSearch = value => {
+    // console.log('value: ', value)
+    if(value && value.length > 2){
+      setLoading(true)
+      searchMovies({
+        query: value,
+        include_adult: 'false',
+        language: 'en-US',
+        page: '1',
+      }).then(data=>{
+        setLoading(false)
+        // console.log('Got Movies: ', data)
+        if(data) setResults(data.results)
+      })
+    }
+    else{
+      setLoading(false)
+      setResults([])
+    }
+  }
+  const handleTextDebounce = useCallback(debounce(handleSearch,400), [])
 
   return (
     <SafeAreaView style={styles.searchWrapper}>
       <View style={styles.searchBarWrapper}>
         <TextInput
+          onChangeText={handleSearch}
           placeholder='Search Movie'
           placeholderTextColor={'lightgray'}
           style={styles.searchBar}
@@ -42,10 +67,10 @@ const SearchScreen = () => {
                   onPress={() => navigation.navigate('Movie', item)}
                 >
                   <Image
-                    source={require('../assets/images/endgamePoster.jpeg')}
+                    source={{uri: image185(item?.poster_path)}}
                     style={{ width: width * 0.44, height: height * 0.3, borderRadius: 16 }}
                   />
-                  <Text style={styles.movieTitle}>{movieName.length > 22 ? movieName.slice(0, 22) + '...' : movieName}</Text>
+                  <Text style={styles.movieTitle}>{item?.title.length > 22 ? item?.title.slice(0, 22) + '...' : item?.title}</Text>
                 </TouchableOpacity>
               ))}
             </View>

@@ -6,9 +6,12 @@ const trendingMoviesEndPoint = `${apiBaseurl}/trending/movie/day?api_key=${apiKe
 const upcomingMoviesEndPoint = `${apiBaseurl}/movie/upcoming?api_key=${apiKey}`
 const topRatedMoviesEndPoint = `${apiBaseurl}/movie/top_rated?api_key=${apiKey}`
 
+const searchMoviesEndPoint = `${apiBaseurl}/search/movie?api_key=${apiKey}`
+
 const movieDetailsEndPoint = id => `${apiBaseurl}/movie/${id}?api_key=${apiKey}`
 const movieCreditsEndPoint = id => `${apiBaseurl}/movie/${id}/credits?api_key=${apiKey}`
 const similarMoviesEndPoint = id => `${apiBaseurl}/movie/${id}/similar?api_key=${apiKey}`
+
 
 const personDetailsEndPoint = id => `${apiBaseurl}/person/${id}?api_key=${apiKey}`
 const personMovieEndPoint = id => `${apiBaseurl}/person/${id}/movie_credits?api_key=${apiKey}`
@@ -62,4 +65,8 @@ export const fetchPersonDetails = id => {
 }
 export const fetchPersonMovies = id => {
   return apiCall(personMovieEndPoint(id))
+}
+
+export const searchMovies = params => {
+  return apiCall(searchMoviesEndPoint, params)
 }
