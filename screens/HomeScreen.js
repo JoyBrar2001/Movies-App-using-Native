@@ -5,14 +5,19 @@ import { Bars3CenterLeftIcon, MagnifyingGlassIcon } from 'react-native-heroicons
 import { theme } from '../theme';
 import TrendingMovies from '../components/TrendingMovies';
 import MovieList from '../components/MovieList';
+import { useNavigation } from '@react-navigation/native';
+import Loading from '../components/loading';
 
 const ios = Platform.OS == "ios";
 
 const HomeScreen = () => {
 
-  const [trending, setTrending] = useState([1,2,3,4,5])
-  const [upcoming, setUpcoming] = useState([1,2,3,4,5])
-  const [topRated, setTopRated] = useState([1,2,3,4,5])
+  const [trending, setTrending] = useState([1, 2, 3, 4, 5])
+  const [upcoming, setUpcoming] = useState([1, 2, 3, 4, 5])
+  const [topRated, setTopRated] = useState([1, 2, 3, 4, 5])
+  const [loading, setLoading] = useState(false);
+
+  const naviagtion = useNavigation();
 
   return (
     <View style={styles.homeWrapper}>
@@ -21,21 +26,27 @@ const HomeScreen = () => {
         <View style={styles.searchWrapper}>
           <Bars3CenterLeftIcon size={30} strokeWidth={2} color="white" />
           <Text style={styles.title}>
-            <Text style={{color: theme.text}}>M</Text>ovies
+            <Text style={{ color: theme.text }}>M</Text>ovies
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => naviagtion.navigate('Search')}>
             <MagnifyingGlassIcon size={30} strokeWidth={2} color="white" />
           </TouchableOpacity>
         </View>
       </SafeAreaView>
 
-      <ScrollView vertical showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 10, marginTop: -10, }}>
-        <TrendingMovies data={trending} />
-      
-        <MovieList title="Upcoming" data={upcoming} />
-        <MovieList title="Top Rated" data={topRated} />
+      {
+        loading ? (
+          <Loading />
+        ) : (
+          <ScrollView vertical showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 10, marginTop: -10, }}>
+            <TrendingMovies data={trending} />
 
-      </ScrollView>
+            <MovieList title="Upcoming" data={upcoming} />
+            <MovieList title="Top Rated" data={topRated} />
+
+          </ScrollView>
+        )
+      }
     </View>
   );
 }

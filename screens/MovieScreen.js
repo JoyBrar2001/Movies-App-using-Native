@@ -9,6 +9,7 @@ import { Image } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import Cast from '../components/Cast'
 import MovieList from '../components/MovieList'
+import Loading from '../components/loading'
 
 var { width, height } = Dimensions.get('window')
 const ios = Platform.OS == "ios"
@@ -18,11 +19,12 @@ const MovieScreen = () => {
   const [isFavourite, toggleFavourite] = useState(false);
   const navigation = useNavigation();
   let movieName = "Avengers: Endgame"
-  const [cast, setCast] = useState([1,2,3,4,5])
-  const [similarMovies, setSimilarMovies] = useState([1,2,3,4,5])
-  useEffect(()=>{
+  const [cast, setCast] = useState([1, 2, 3, 4, 5])
+  const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5])
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
     // API CALL HERE
-  },[item])
+  }, [item])
 
   return (
     <ScrollView vertical showsVerticalScrollIndicator={false} contentContainerStyle={styles.movieScreenWrapper} >
@@ -32,23 +34,28 @@ const MovieScreen = () => {
             <ChevronLeftIcon size={28} color="white" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => toggleFavourite(!isFavourite)}>
-            <HeartIcon size={35} color={isFavourite? theme.background : 'white'} />
+            <HeartIcon size={35} color={isFavourite ? theme.background : 'white'} />
           </TouchableOpacity>
         </SafeAreaView>
-        <View>
-          <Image 
-            source={require('../assets/images/endgamePoster.jpeg')} 
-            style={{ width: width, height: height*0.55 }}
-          />
-          <LinearGradient
-            colors={['transparent', 'rgba(31,32,30,0.8)', 'rgba(31,32,30,1)']}
-            style={styles.gradientStyles}
-            start={{ x: 0.5, y: 0}}
-            end={{ x: 0.5, y: 1}}
-          >
 
-          </LinearGradient>
-        </View>
+        {loading ? (
+          <Loading />
+        ) : (
+          <View>
+            <Image
+              source={require('../assets/images/endgamePoster.jpeg')}
+              style={{ width: width, height: height * 0.55 }}
+            />
+            <LinearGradient
+              colors={['transparent', 'rgba(31,32,30,0.8)', 'rgba(31,32,30,1)']}
+              style={styles.gradientStyles}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+            >
+
+            </LinearGradient>
+          </View>
+        )}
       </View>
 
       <View style={styles.movieDetailsWrapper}>
@@ -63,7 +70,7 @@ const MovieScreen = () => {
       </View>
 
       <Text style={styles.description}>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure veritatis sit nihil quas voluptas corporis cum explicabo quisquam recusandae, quia quibusdam aliquid aliquam, ut aperiam? Exercitationem accusamus dolore ullam voluptas beatae, quasi laudantium odit architecto non odio, minima quaerat. Adipisci ut soluta quasi saepe debitis, velit error commodi repudiandae tempora.</Text>
-    
+
       <Cast navigation={navigation} cast={cast} />
 
       <MovieList title="Similar Movies" data={similarMovies} />
@@ -95,12 +102,12 @@ const styles = StyleSheet.create({
   },
   gradientStyles: {
     width: width,
-    height: height*0.40,
+    height: height * 0.40,
     position: 'absolute',
     bottom: 0,
   },
   movieDetailsWrapper: {
-    marginTop: -(height*0.09),
+    marginTop: -(height * 0.09),
   },
   movieTitle: {
     color: "white",
