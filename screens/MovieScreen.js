@@ -10,7 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import Cast from '../components/Cast'
 import MovieList from '../components/MovieList'
 import Loading from '../components/Loading'
-import { fetchMovieCredits, fetchMovieDetails, image500 } from '../api/moviedb'
+import { fetchMovieCredits, fetchMovieDetails, fetchSimilarMovies, image500 } from '../api/moviedb'
 
 var { width, height } = Dimensions.get('window')
 const ios = Platform.OS == "ios"
@@ -20,7 +20,7 @@ const MovieScreen = () => {
   const [isFavourite, toggleFavourite] = useState(false);
   const navigation = useNavigation();
   const [cast, setCast] = useState([])
-  const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5])
+  const [similarMovies, setSimilarMovies] = useState()
   const [loading, setLoading] = useState(true)
   const [movie, setMovie] = useState({})
   
@@ -29,6 +29,7 @@ const MovieScreen = () => {
     setLoading(true)
     getMovieDetails(item.id)
     getMovieCredits(item.id)
+    getSimilarMovies(item.id)
   }, [item])
 
   const getMovieDetails = async id => {
@@ -42,6 +43,12 @@ const MovieScreen = () => {
     const data = await fetchMovieCredits(id)
     // console.log('Credits : ', data.cast)
     if(data) setCast(data.cast)
+  }
+  
+  const getSimilarMovies = async id => {
+    const data = await fetchSimilarMovies(id)
+    // console.log('Similar Movies : ', data.results)
+    if(data) setSimilarMovies(data.results)
   }
 
   return (
@@ -95,7 +102,7 @@ const MovieScreen = () => {
 
       <Cast navigation={navigation} cast={cast} />
 
-      {/* <MovieList title="Similar Movies" data={similarMovies} /> */}
+      <MovieList title="Similar Movies" data={similarMovies} />
     </ScrollView>
   )
 }

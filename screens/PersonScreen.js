@@ -1,19 +1,41 @@
 import { StyleSheet, Text, View, ScrollView, SafeAreaView, TouchableOpacity, Dimensions, Image } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ChevronLeftIcon } from 'react-native-heroicons/outline'
 import { HeartIcon } from 'react-native-heroicons/solid'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { theme } from '../theme'
 import Loading from '../components/Loading'
 import MovieList from '../components/MovieList'
+import { fetchPersonDetails, fetchPersonMovies, image342 } from '../api/moviedb'
 
 const { width, height } = Dimensions.get('window')
 
 const PersonScreen = () => {
+  const {params: item} = useRoute()
   const navigation = useNavigation()
   const [isFavourite, toggleFavourite] = useState(false)
-  const [personMovies, setPersonMovie] = useState([1,2,3,4])
-  const [loading, setLoading] = useState(false)
+  const [personMovies, setPersonMovie] = useState()
+  const [loading, setLoading] = useState(true)
+  const [person, setPerson] = useState({})
+
+  useEffect(()=>{
+    setLoading(true)
+    // console.log('Person : ' , item)
+    getPersonDetails(item.id)
+    getPersonMovies(item.id)
+    setLoading(false)
+  },[item])
+
+  const getPersonDetails = async id => {
+    const data = await fetchPersonDetails(id)
+    // console.log('Person Details : ', data)
+    if(data) setPerson(data)
+  }
+  const getPersonMovies = async id => {
+    const data = await fetchPersonMovies(id)
+    // console.log('Person Movies\n\n\n : ', data)
+    if(data) setPersonMovie(data.cast)
+  }
 
   return (
     <ScrollView vertical showsVerticalScrollIndicator={false} contentContainerStyle={styles.personWrapper}>
@@ -32,37 +54,37 @@ const PersonScreen = () => {
         <View>
           <View style={styles.imageWrapper}>
             <View style={styles.circularWrapper}>
-              <Image source={require('../assets/images/chrisEvans.jpeg')} style={styles.personImage} />
+              <Image source={{uri: image342(person?.profile_path)}} style={styles.personImage} />
             </View>
           </View>
 
           <View>
-            <Text style={styles.personName}>Chris Evans</Text>
-            <Text style={styles.personLocation}>London, United Kingdom</Text>
+            <Text style={styles.personName}>{person?.name}</Text>
+            <Text style={styles.personLocation}>{person?.place_of_birth}</Text>
           </View>
 
           <View style={styles.infoWrapper}>
             <View style={styles.infoBox}>
               <Text style={styles.infoTitle}>Gender</Text>
-              <Text style={styles.infoDesc}>Male</Text>
+              <Text style={styles.infoDesc}>{person?.gender == 1 ? 'Female' : 'Male'}</Text>
             </View>
             <View style={styles.infoBox}>
               <Text style={styles.infoTitle}>Birthday</Text>
-              <Text style={styles.infoDesc}>1964-09-02</Text>
+              <Text style={styles.infoDesc}>{person?.birthday}</Text>
             </View>
             <View style={styles.infoBox}>
               <Text style={styles.infoTitle}>Known for</Text>
-              <Text style={styles.infoDesc}>Acting</Text>
+              <Text style={styles.infoDesc}>{person?.known_for_department}</Text>
             </View>
             <View style={[styles.infoBox, {borderRightWidth: 0}]}>
               <Text style={styles.infoTitle}>Popularity</Text>
-              <Text style={styles.infoDesc}>64.23</Text>
+              <Text style={styles.infoDesc}>{person?.popularity?.toFixed(2)}</Text>
             </View>
           </View>
 
           <View style={styles.bioWrapper}>
             <Text style={styles.biographyTitle}>Biography</Text>
-            <Text style={styles.biographyText}>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Optio eos assumenda explicabo quaerat vero accusantium accusamus sequi quia, culpa molestias? Vero explicabo corrupti quae corporis pariatur perspiciatis, dolore exercitationem molestiae molestias, quasi fugiat voluptas autem sequi quisquam, neque earum minus ipsum. Rerum, inventore. Quam rerum deserunt quod natus suscipit labore!</Text>
+            <Text style={styles.biographyText}>{person?.biography}</Text>
           </View>
         </View>
       )}
